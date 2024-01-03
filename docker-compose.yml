@@ -11,7 +11,8 @@ services:
       MONGO_URI: mongodb://mongodb:27017/demo_db
     volumes:
       - ./app:/usr/src/app  # Mount the app directory for hot reloading
-
+    command: ["sh", "-c", "cd /usr/src/app && chmod +x setup.sh && ./setup.sh && npm start"]  # Navigate into the app directory and run setup.sh
+    
   ui:
     build:
       context: ./ui
@@ -21,8 +22,18 @@ services:
       - app
     volumes:
       - ./ui:/usr/src/app # Mount the app directory for hot reloading
-
+    
   mongodb:
     image: mongo
     ports:
       - "27017:27017"
+    
+  mongo-express:
+    image: mongo-express
+    environment:
+    - ME_CONFIG_MONGODB_SERVER=mongodb
+    - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081

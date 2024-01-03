@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+   <div class="container">
+      <a class="navbar-brand" href="#">Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+         <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+            <li class="nav-item">
+               <a class="nav-link active" aria-current="page" href="/home">Home</a>
+            </li>
+         </ul>
+         <span class="navbar-text" *ngIf="(isLoggedIn | async)">
+            Hi <b>{{(user | async) ? (user | async) : null}}</b>, welcome! &nbsp;
+         </span>
+         <form class="d-flex" role="search">
+            <ng-container *ngIf="(isLoggedIn | async); else notLoggedIn">
+               <button class="btn btn-outline-danger" type="button" (click)="signOut()" >Sign Out</button>
+            </ng-container>
+            <ng-template #notLoggedIn>
+               <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
+            </ng-template>
+         </form>
+      </div>
+   </div>
+</nav>
+<div class="modal fade" #loginModal id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h1 class="modal-title fs-5" id="loginModalLabel">Sign In</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form [formGroup]="loginForm">
+               <div class="mb-3">
+                  <label for="username" class="form-label">Username</label>
+                  <input type="text" class="form-control" id="username" formControlName="username" name="username">
+                  <div *ngIf="loginForm.get('username').hasError('required') && loginForm.get('username').touched" class="text-danger">
+                     Username is required.
+                  </div>
+               </div>
+               <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="password" formControlName="password" name="password">
+                  <div *ngIf="loginForm.get('password').hasError('required') && loginForm.get('password').touched" class="text-danger">
+                     Password is required.
+                  </div>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" (click)="signIn()">Sign In</button>
+         </div>
+      </div>
+   </div>
+</div>
